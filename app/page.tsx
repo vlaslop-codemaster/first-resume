@@ -72,8 +72,9 @@ SKILLS
       body: JSON.stringify({ resumeData: output }),
     });
     const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
+   if (data.url) {
+  window.open(data.url, "_self");
+}
     } else {
       alert("Payment failed to initialize. Please try again.");
       setPaying(false);
