@@ -66,17 +66,21 @@ SKILLS
 
   const handlePay = async () => {
     setPaying(true);
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ resumeData: output }),
-    });
-    const data = await res.json();
-   if (data.url) {
-  window.open(data.url, "_self");
-}
-    } else {
-      alert("Payment failed to initialize. Please try again.");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeData: output }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.assign(data.url);
+      } else {
+        alert("Payment failed to initialize. Please try again.");
+        setPaying(false);
+      }
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
       setPaying(false);
     }
   };
@@ -89,7 +93,6 @@ SKILLS
   return (
     <main style={{ minHeight: "100vh", background: "#f5f4ff", fontFamily: "'Segoe UI', sans-serif" }}>
 
-      {/* Navbar */}
       <nav style={{ background: "#fff", borderBottom: "1px solid #e5e7eb", padding: "1rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ width: "32px", height: "32px", background: "#7c3aed", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -100,7 +103,6 @@ SKILLS
         <span style={{ fontSize: "13px", color: "#6b7280" }}>Built for students 🎓</span>
       </nav>
 
-      {/* Hero */}
       <section style={{ textAlign: "center", padding: "4rem 1rem 2rem" }}>
         <div style={{ display: "inline-block", background: "#ede9fe", color: "#6d28d9", padding: "4px 14px", borderRadius: "9999px", fontSize: "13px", fontWeight: 500, marginBottom: "1rem" }}>
           Free to generate · $1 to download
@@ -112,7 +114,6 @@ SKILLS
         <p style={{ color: "#6b7280", fontSize: "1.1rem", maxWidth: "460px", margin: "0 auto 2rem" }}>
           Build a job-winning resume in 5 minutes — designed for high school and university students.
         </p>
-
         <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap", marginBottom: "2.5rem" }}>
           {["✅ ATS-friendly", "✅ No experience needed", "✅ 5 minutes or less"].map((badge) => (
             <span key={badge} style={{ color: "#374151", fontSize: "14px", fontWeight: 500 }}>{badge}</span>
@@ -120,20 +121,19 @@ SKILLS
         </div>
       </section>
 
-      {/* Form Card */}
       <section style={{ maxWidth: "580px", margin: "0 auto", padding: "0 1rem 3rem" }}>
         <div style={{ background: "#fff", borderRadius: "20px", border: "1px solid #e5e7eb", padding: "2rem", boxShadow: "0 4px 24px rgba(124,58,237,0.07)" }}>
 
           <div style={{ display: "flex", gap: "8px", marginBottom: "1.75rem" }}>
             {[1, 2].map((s) => (
-              <div key={s} style={{ flex: 1, height: "5px", borderRadius: "9999px", background: step >= s ? "#7c3aed" : "#e5e7eb", transition: "background 0.3s" }} />
+              <div key={s} style={{ flex: 1, height: "5px", borderRadius: "9999px", background: step >= s ? "#7c3aed" : "#e5e7eb" }} />
             ))}
           </div>
 
           {step === 1 && (
             <div>
               <h2 style={{ fontWeight: 700, fontSize: "1.15rem", marginBottom: "0.25rem", color: "#111" }}>Tell us about yourself</h2>
-              <p style={{ color: "#9ca3af", fontSize: "14px", marginBottom: "1.25rem" }}>Don't worry if you don't have much experience — that's what we're here for.</p>
+              <p style={{ color: "#9ca3af", fontSize: "14px", marginBottom: "1.25rem" }}>Don&apos;t worry if you don&apos;t have much experience — that&apos;s what we&apos;re here for.</p>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 <input
                   name="name"
@@ -204,7 +204,6 @@ SKILLS
           )}
         </div>
 
-        {/* Resume Output */}
         {output && (
           <div style={{ background: "#fff", borderRadius: "20px", border: "1px solid #e5e7eb", marginTop: "1.5rem", overflow: "hidden", boxShadow: "0 4px 24px rgba(124,58,237,0.07)" }}>
             <div style={{ padding: "1.5rem 2rem", borderBottom: "1px solid #f3f4f6" }}>
@@ -218,7 +217,6 @@ SKILLS
 
             <div style={{ position: "relative", padding: "0 2rem" }}>
               <pre style={{ whiteSpace: "pre-wrap", fontSize: "14px", lineHeight: "1.8", color: "#374151", margin: 0, filter: "blur(4px)", userSelect: "none" }}>{hiddenText}</pre>
-
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.95))", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", paddingBottom: "2rem" }}>
                 <div style={{ textAlign: "center" }}>
                   <p style={{ fontWeight: 700, fontSize: "1rem", color: "#111", marginBottom: "0.5rem" }}>🔒 Unlock your full resume</p>
