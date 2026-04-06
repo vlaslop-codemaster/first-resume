@@ -3,27 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  
-  if (!apiKey) {
-    return NextResponse.json({ text: "ERROR: No API key found" });
-  }
-
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: body.prompt }],
-    }),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: body.prompt }] }],
+      }),
+    }
+  );
 
   const data = await res.json();
-  console.log("Anthropic response:", JSON.stringify(data));
-  return NextResponse.json({ text: data.content?.[0]?.text || JSON.stringify(data) });
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong. Please try again.";
+  return NextResponse.json({ text });
 }
